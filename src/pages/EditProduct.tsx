@@ -5,6 +5,7 @@ import ProductForm, { ProductFormInput } from "../components/ProductForm";
 import axios from "../utils/AxiosInstance";
 import { fetchProductDetail } from "./ProductDetail";
 
+
 const editProduct = async (data: ProductFormInput, id: string | undefined) => {
   return await axios.put(`/products/${id}`, data);
 };
@@ -53,7 +54,7 @@ const EditProduct = () => {
           </div>
         </div>
       )}
-      <h2 className="text-2xl font-bold mb-6 mt-10">Edit Product</h2>
+     
       <ProductForm
         isEdit={true}
         mutateFn={editProductMutation.mutate}

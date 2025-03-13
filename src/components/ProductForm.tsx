@@ -16,168 +16,115 @@ export type ProductFormInput = {
   discountPercentage: number;
 };
 
-const ProductForm: React.FC<ProductFormProps> = (props) => {
+const ProductForm: React.FC<ProductFormProps> = ({ isEdit, mutateFn, defaultInputData }) => {
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors }
+    formState: { errors },
   } = useForm<ProductFormInput>();
+
   useEffect(() => {
-    if (props.defaultInputData) {
-      setValue("title", props.defaultInputData.title);
-      setValue("description", props.defaultInputData.description);
-      setValue("discountPercentage", props.defaultInputData.discountPercentage);
-      setValue("category", props.defaultInputData.category);
-      setValue("price", props.defaultInputData.price);
+    if (defaultInputData) {
+      setValue("title", defaultInputData.title);
+      setValue("description", defaultInputData.description);
+      setValue("discountPercentage", defaultInputData.discountPercentage);
+      setValue("category", defaultInputData.category);
+      setValue("price", defaultInputData.price);
     }
-  }, [props.defaultInputData]);
+  }, [defaultInputData, setValue]);
+
   const onSubmit: SubmitHandler<ProductFormInput> = (data) => {
-    if (props.isEdit) {
-      if (!confirm("Are you sure want to update product data ? ")) {
-        return;
-      }
+    if (isEdit && !confirm("Are you sure you want to update the product data?")) {
+      return;
     }
-    props.mutateFn(data);
+    mutateFn(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">Title</label>
-        <input
-          type="text"
-          id="title"
-          className={
-            "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " +
-            (errors.title && "border-red-500")
-          }
-          placeholder="Product Title"
-          {...register("title", { required: true })}
-        />
-        {errors.title && (
-          <p className="text-red-600 text-xs italic" id="titleError">
-            Title is required.
-          </p>
-        )}
-      </div>
+    <div className="max-w-lg mx-auto bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        {isEdit ? "Update Product" : "Create a New Product"}
+      </h2>
 
-      <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">
-          Description
-        </label>
-        <textarea
-          id="description"
-          {...register("description")}
-          className={
-            "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " +
-            (errors.description && "border-red-500")
-          }
-          rows={4}
-          placeholder="Product Description"
-          {...register("description", { required: true })}
-        ></textarea>
-
-        {errors.description && (
-          <p className="text-red-600 text-xs italic" id="titleError">
-            Description is required.
-          </p>
-        )}
-      </div>
-
-      <div className="mb-4 relative">
-        <label className="block text-gray-700 font-bold mb-2">Price</label>
-        <div className="flex">
-          <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 rounded-l-md border border-r-0 border-gray-300">
-            $
-          </span>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Title */}
+        <div>
+          <label className="block text-gray-700 font-medium">Title</label>
           <input
-            type="number"
-            id="price"
-            className={
-              "shadow appearance-none border rounded-r-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " +
-              (errors.price && "border-red-500")
-            }
-            step="0.01" min="0"
-            placeholder="0.00"
-            {...register("price")}
+            type="text"
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+            placeholder="Enter product title"
+            {...register("title", { required: "Title is required." })}
           />
-          {errors.price && (
-            <p className="text-red-600 text-xs italic" id="titleError">
-              Price is required.
-            </p>
-          )}
+          {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
         </div>
-      </div>
 
-      <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">Category</label>
-        <select
-          id="category"
-          className={
-            "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" +
-            (errors.category && "border-red-500")
-          }
-          {...register("category")}
-        >
-          <option value="beauty">Beauty</option>
-          <option value="fragrance">Fragrance</option>
-          <option value="furniture">Furniture</option>
-        </select>
-        {errors.category && (
-          <p className="text-red-600 text-xs italic" id="titleError">
-            Category is required.
-          </p>
-        )}
-      </div>
+        {/* Description */}
+        <div>
+          <label className="block text-gray-700 font-medium">Description</label>
+          <textarea
+            rows={4}
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+            placeholder="Enter product description"
+            {...register("description", { required: "Description is required." })}
+          />
+          {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+        </div>
 
-      <div className="mb-4 relative">
-        <label className="block text-gray-700 font-bold mb-2">
-          Discount Percentage
-        </label>
-        <div className="flex">
+        {/* Price */}
+        <div>
+          <label className="block text-gray-700 font-medium">Price ($)</label>
           <input
-            {...register("discountPercentage")}
             type="number"
-            id="discountPercentage"
-            className={
-              "shadow appearance-none border rounded-l-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" +
-              (errors.category && "border-red-500")
-            }
             step="0.01"
-            min="0"
-            max="100"
-            placeholder="0"
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+            placeholder="Enter price"
+            {...register("price", { required: "Price is required." })}
           />
-          <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 rounded-r-md border border-l-0 border-gray-300">
-            %
-          </span>
-          {errors.discountPercentage && (
-            <p className="text-red-600 text-xs italic" id="titleError">
-              Discount is required.
-            </p>
-          )}
+          {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
         </div>
-      </div>
 
-      <div className="flex items-center justify-between">
-        {props.isEdit ? (
+        {/* Category */}
+        <div>
+          <label className="block text-gray-700 font-medium">Category</label>
+          <select
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+            {...register("category", { required: "Category is required." })}
+          >
+            <option value="beauty">Beauty</option>
+            <option value="fragrance">Fragrance</option>
+            <option value="furniture">Furniture</option>
+          </select>
+          {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
+        </div>
+
+        {/* Discount Percentage */}
+        <div>
+          <label className="block text-gray-700 font-medium">Discount (%)</label>
+          <input
+            type="number"
+            step="0.01"
+            className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
+            placeholder="Enter discount percentage"
+            {...register("discountPercentage", { required: "Discount is required." })}
+          />
+          {errors.discountPercentage && <p className="text-red-500 text-sm">{errors.discountPercentage.message}</p>}
+        </div>
+
+        {/* Submit Button */}
+        <div className="text-center">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className={`w-full py-3 rounded-md font-semibold text-white transition transform hover:scale-105 ${
+              isEdit ? "bg-blue-500 hover:bg-blue-600" : "bg-green-500 hover:bg-green-600"
+            }`}
           >
-            Save Product
+            {isEdit ? "Save Changes" : "Add Product"}
           </button>
-        ) : (
-          <button
-            type="submit"
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Add Product
-          </button>
-        )}
-      </div>
-    </form>
+        </div>
+      </form>
+    </div>
   );
 };
 

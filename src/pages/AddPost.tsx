@@ -1,28 +1,45 @@
 import { useMutation } from "@tanstack/react-query";
-import ProductForm, { ProductFormInput } from "../components/ProductForm";
 import axios from "../utils/AxiosInstance";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import PostForm from "../components/PostForm";
 
-const addProduct = async (data: ProductFormInput) => {
-  return await axios.post("/products/add", data);
+interface postDat {
+  title: string;
+  body: string;
+  tags: string[];
+  reactions: Reaction;
+  views: number;
+  userId: number;
+}
+
+
+interface Reaction {
+  likes: number;
+  dislikes: number;
+}
+
+
+const addPost = async (data: postDat) => {
+  return await axios.post("/posts/add", data);
 };
 
-const AddProduct = () => {
+const AddPost = () => {
   const { mutate, isSuccess, isPending } = useMutation({
-    mutationFn: addProduct
+    mutationFn: addPost,
   });
+
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (isSuccess) {
-      navigate("/product", { replace: true });
+      navigate("/posts", { replace: true });
     }
   }, [isSuccess]);
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="relative w-full max-w-lg bg-white p-8 rounded-lg shadow-lg">
+      <div className="relative w-full max-w-lg p-8 bg-white shadow-lg rounded-lg">
         {isPending && (
           <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
             <div className="flex items-center bg-white/90 px-6 py-3 rounded-lg shadow-lg">
@@ -50,12 +67,11 @@ const AddProduct = () => {
             </div>
           </div>
         )}
-        
-        <ProductForm isEdit={false} mutateFn={mutate} />
+        <h2 className="text-2xl font-bold mb-6 text-center">Add New Post</h2>
+        <PostForm isEdit={false} mutateFn={mutate} />
       </div>
     </div>
   );
 };
 
-export default AddProduct;
-
+export default AddPost;
