@@ -13,12 +13,12 @@ import {
   import ProductDetail from "./pages/ProductDetail";
   import Home from "./pages/Home";
   import AddProduct from "./pages/AddProduct";
-  import AddPost from "./pages/addPost";
+  import AddPost from "./pages/AddPost";
   import AddRecipes from "./pages/AddRecipes";
   import RecipesDetail from "./pages/RecipesDetail";
   import Todos from "./pages/Todos";
-  import AddComments from "./pages/addComments";
-  import AddTodos from "./pages/addTodos";	
+  import AddComments from "./pages/AddComments";
+  import AddTodos from "./pages/AddTodos";	
   import EditRecipes from "./pages/EditRecipes";
   import EditProduct from "./pages/EditProduct";
   import DetailComments from "./pages/DetailComments";
